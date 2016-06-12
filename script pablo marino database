@@ -1,0 +1,83 @@
+
+create database db_marino_pablo;
+
+use db_marino_pablo;
+
+create table propietarios(
+	dni int(8) primary key,
+	direccion varchar(45) not null,
+	telefono varchar(15) not null,
+	nombre varchar(40) not null
+);
+
+insert into propietarios values(38992628, "leones 20180", "5433-8858", "miriam lopez"),
+			(17826458, "bulnes 1750, el palomar", "1130530305", "pablo marino"),
+			(19565475, "velez sarfield 33556, capital federal", 11458965, "luis martinez");
+
+
+
+create table ordenes(
+horasTrabajadas int default 0 not null,
+patente varchar(8) not null,
+fecha date not null,
+dniPropietario int(8) not null,
+marca varchar(20),
+modelo varchar(20),
+detalle varchar(400),
+precioFinal float default 0,
+estado enum('activo', 'finalizado') not null,
+id int primary key auto_increment,
+foreign key(dniPropietario) references propietarios(dni)
+);
+
+create table empleados(
+dni int(8) primary key,
+nombre varchar(40) not null,
+idOrden int,
+foreign key(idOrden) references ordenes(id)
+);
+
+insert into ordenes (horasTrabajadas, patente, fecha, dniPropietario, marca, modelo,
+					detalle, estado)
+	values (15, "aaa-555", '2015-11-09', 38992628, "audi", "a1", "no enciende", 'activo'),
+	(150, "abz-563", '2016-10-09',  19565475, "jeep", "renegade", "motor nuevo", 'activo');
+
+insert into ordenes (precioFinal, horasTrabajadas, patente, fecha, dniPropietario, marca, modelo,
+					detalle, estado)
+	        values(450, 3, "hge-563", '2010-10-03',  19565475, "jeep", "renegade", "pintura, volante, es decir: Reparación proviene del latín reparatĭōnis. Se define como la acción o efecto de restituir a su condición normal y de buen funcionamiento, a cosas materiales mal hechas, deterioradas,o rotas.", 'finalizado');
+
+insert into empleados values(18456987, "raul caseres", 1),
+							(12345678, "claudio sacella", 2);
+
+create table repuestos(
+	 id int primary key auto_increment,
+	 nombre varchar(30) not null,
+     precio float not null
+);
+
+insert into repuestos(nombre, precio) values("neumatico audi", 15000),
+									("valvula jeep", 10000),
+								("frenos abs", 25000);
+
+
+create table ordenRepuesto(
+		idOrden int,
+        idRepuesto int,
+		id int primary key auto_increment,
+        cantidad int not null,
+        foreign key(idOrden) references ordenes(id),
+        foreign key(idRepuesto) references repuestos(id)
+);
+
+insert into ordenRepuesto (idOrden, idRepuesto, cantidad)values(1, 1, 4),
+																(1, 3, 1),
+																(2, 1, 2);
+
+
+describe repuestos;
+select * from ordenRepuesto;
+select * from repuestos;
+select * from propietarios;
+select * from empleados;
+select * from ordenes;
+
